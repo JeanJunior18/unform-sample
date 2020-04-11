@@ -1,79 +1,35 @@
-import React,{ useRef, useEffect } from 'react';
+import React,{ } from 'react';
 import './App.css';
-import { Form } from '@unform/web'
-import { Scope } from '@unform/core'
-import Input, {  } from './components/Form/Input'
-import * as Yup from 'yup'
+import { Form, Select, Input } from '@rocketseat/unform';
+// import * as Yup from 'yup'
 
 function App() {
 
-  const formRef = useRef(null)
+  function handleSubmit(data){
+    console.log(data);
+  }
 
-  
+  let options = [
+    {id: 1, cont:'item1', carro:'1'},
+    {id: 2, cont:'item2', carro:'2'},
+    {id: 3, cont:'item3', carro:'3'},
+    {id: 4, cont:'item4', carro:'4'},
+  ];
 
-  useEffect(()=>{
-    setTimeout(()=>{
-      formRef.current.setData({
-        username: 'jeanjr',
-        password: 'root',
-        adress: {
-          street: 'Rua Altos',
-          number: '215',
-        },
-        education:{
-          universidade: 'Faculdade Integral Diferencial',
-          curso: 'Sistemas de Informação',
-          periodo: 2,
-        }
-      })
-    },1000)
-  },[])
+  options.forEach(i => {i['title'] = i.cont})
 
-  async function handleSubmit(data){
-
-    try{
-      const schema = Yup.object().shape({
-      username: Yup.string().required('O nome é obrigatório'),
-      password: Yup.string().required('A senha é obrigatória'),
-      adress: Yup.object().shape({
-        street: Yup.string().required('Rua é obrigatório')
-      })
-    });
-    formRef.current.setErrors({})
-    await schema.validate(data, { abortEarly: false })
-
-    console.log(data)
-    }catch(err){
-      const ErrorMessages = {}
-      if(err instanceof Yup.ValidationError){
-        err.inner.forEach(error=>{
-          ErrorMessages[error.path] = error.message;
-        })
-      }
-        formRef.current.setErrors(ErrorMessages)
-    }
+  function autocomplete(id){
+    var comp = Number(id.target.value)
+    var info = options.filter(x => x.id === comp) 
+    console.log(info)
   }
 
   return (
-    <div className="App">
-     
-     <Form ref={formRef}  onSubmit={handleSubmit}>
-       <Input name="username" />
-       <Input name="password" type="password" />
-       
-       <Input name="adress.street" />
-       <Input name="adress.number" />
-
-        <Scope path="education">
-          <Input name='universidade' />
-          <Input name='curso' />
-          <Input name='periodo' />
-        </Scope>
-
-
-       <input type="submit" value="Enviar" />
-     </Form>
-    </div>
+    <Form onSubmit={handleSubmit}>
+      <Select name='cliente' options={options} key={options} onChange={autocomplete} />
+      <Input name='nome'/>
+      <button type="submit">Enviar</button>
+    </Form>
   );
 }
 
