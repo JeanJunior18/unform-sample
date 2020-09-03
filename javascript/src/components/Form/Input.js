@@ -2,9 +2,9 @@ import React, { useRef, useEffect } from 'react';
 import { useField } from '@unform/core';
 
 
-function Input({ name }) {
+function Input({ name, label }) {
   const inputRef = useRef(null)
-  const { fieldName, registerField} = useField(name);
+  const { fieldName, registerField, defaultValue} = useField(name);
 
   useEffect(()=>{
     registerField({
@@ -15,7 +15,11 @@ function Input({ name }) {
   },[fieldName, registerField])
 
   return (
-    <input ref={inputRef} />
+    <>
+      {label && <label htmlFor={fieldName}>{label}</label>}
+
+      <input ref={inputRef} defaultValue={defaultValue} />
+    </>
   );
 }
 
